@@ -33,7 +33,7 @@ export const useAuth = (): any => {
 function useProvideAuth() {
   const [user, setUser] = useState(null)
   const [accessToken, setAccessToken] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false) 
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem(USER_DATA_KEY) || 'null')
@@ -65,7 +65,11 @@ function useProvideAuth() {
   }
 
   const signout = () => {
-    return null
+    localStorage.removeItem(ACCESS_TOKEN_KEY)
+    localStorage.removeItem(USER_DATA_KEY)
+    setUser(null)
+    setIsAuthenticated(false)
+    setAccessToken('')
   }
 
   return {

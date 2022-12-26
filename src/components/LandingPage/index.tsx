@@ -25,6 +25,7 @@ const LandingPage: React.FC = (): React.ReactElement => {
 
   useEffect(() => {
     checkProfile()
+    console.log('Calling check profile...')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
