@@ -5,11 +5,8 @@ import HomePage from './components/Home';
 import LandingPage from './components/LandingPage';
 import Login from './components/Login';
 import PrivateRoute from './PrivateRoute';
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
 import SignUp from './components/Signup';
+import Contests from './components/Contests';
 
 function App() {
   return (
@@ -18,6 +15,7 @@ function App() {
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<SignUp />} />
       <Route path='/home' element={<PrivateRoute component={<HomePage />} />} />
+      <Route path='/contests' element={<PrivateRoute component={<Contests />} />} />
     </Routes>
   );
 }

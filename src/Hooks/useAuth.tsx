@@ -8,6 +8,7 @@ const AuthContext: any = createContext({
   signinViaPhone: () => { },
   verifyOTP: () => { },
   signout: () => { },
+  accessToken: '',
   isAuthenticated: false,
   setIsAuthenticated: () => { },
   setUser: () => { }
@@ -36,18 +37,16 @@ function useProvideAuth() {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem(USER_DATA_KEY) || 'null')
-    const token = JSON.parse(localStorage.getItem(ACCESS_TOKEN_KEY) || 'null')
+    console.log('========>', localStorage.getItem(ACCESS_TOKEN_KEY))
+    const token = localStorage.getItem(ACCESS_TOKEN_KEY) || 'null'
 
     if (user) setUser(user)
 
-    if (token) setAccessToken(token)
-
+    if (token) {
+      setAccessToken(token)
+      setIsAuthenticated(true)
+    }
   }, [])
-
-  useEffect(() => {
-    localStorage.setItem(ACCESS_TOKEN_KEY, accessToken)
-    localStorage.setItem(USER_DATA_KEY, JSON.stringify(user || ''))
-  }, [accessToken, user])
 
   const signinViaPhone = (phoneNo: string, countryCode: string) => {
     const payload = {
@@ -75,6 +74,7 @@ function useProvideAuth() {
     signout,
     verifyOTP,
     setUser,
+    accessToken,
     setAccessToken,
     isAuthenticated,
     setIsAuthenticated

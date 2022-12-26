@@ -12,6 +12,7 @@ import Copyright from '../Copyright';
 import { MuiTelInput, MuiTelInputInfo, matchIsValidTel } from 'mui-tel-input';
 import { useAuth } from '../../Hooks/useAuth';
 import { Alert, TextField } from '@mui/material';
+import { ACCESS_TOKEN_KEY, USER_DATA_KEY } from '../../constants';
 
 
 const theme = createTheme();
@@ -52,6 +53,9 @@ const SignIn = () => {
         setUser(user)
         setIsAuthenticated(true)
         setAccessToken(token)
+        localStorage.setItem(ACCESS_TOKEN_KEY, token)
+        localStorage.setItem(USER_DATA_KEY, JSON.stringify(user))
+
         navigate('/')
       } else {
         setShowErrorAlert(message)

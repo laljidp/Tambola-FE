@@ -1,12 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from 'react-router';
+import { Container } from "@mui/material";
+import { getMyProfile } from "../../services/Apicall.service";
+import PageSpinner from "../UI/Spinner";
 
 
 const LandingPage: React.FC = (): React.ReactElement => {
-    return (
-        <div className='container'>
-                <h1>Landing page</h1>
-        </div>
-    )
+
+  const navigate = useNavigate()
+
+  const checkProfile = async () => {
+    try {
+      const resp = await getMyProfile()
+      const { success } = resp.data
+      if (success) {
+        navigate('/contests')
+      } else {
+        navigate('/login')
+      }
+    } catch (err) {
+
+    }
+  }
+
+  useEffect(() => {
+    checkProfile()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  return (
+    <Container disableGutters sx={{ height: '100vh' }}>
+      <PageSpinner />
+    </Container>
+  )
 }
 
 

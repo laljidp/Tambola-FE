@@ -13,7 +13,8 @@ const axiosInstance: AxiosInstance = axios.create({
 export const endpoints = {
     login: '/auth/login',
     signup: '/auth/register',
-    verifyOTP: '/auth/verifyOTP'
+    verifyOTP: '/auth/verifyOTP',
+    myProfile: '/user/my-profile'
 }
 
 
@@ -21,7 +22,7 @@ axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem(ACCESS_TOKEN_KEY) || null
     config.headers = {
         ...config.headers,
-        'Authorization': `Beraer ${token}`
+        'Authorization': `Bearer ${token}`  
     }
     return config
 }, (err) => {
