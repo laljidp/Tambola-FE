@@ -4,7 +4,6 @@ import { Container } from "@mui/material";
 import { getMyProfile } from "../../services/Apicall.service";
 import PageSpinner from "../UI/Spinner";
 
-
 const LandingPage: React.FC = (): React.ReactElement => {
 
   const navigate = useNavigate()
@@ -18,14 +17,17 @@ const LandingPage: React.FC = (): React.ReactElement => {
       } else {
         navigate('/login')
       }
-    } catch (err) {
-
+    } catch (err: any) {
+        console.log('err', err)
+        const { status } = err?.response
+        if(status === 401) {
+          navigate('/login')
+        }
     }
   }
 
   useEffect(() => {
     checkProfile()
-    console.log('Calling check profile...')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

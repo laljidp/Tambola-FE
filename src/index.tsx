@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
 import { AuthProvider } from './Hooks/useAuth';
+import { SnackBarProvider } from './Hooks/useSnackbar'
 import App from './App';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -17,11 +18,13 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
-  <React.StrictMode>    
+  <React.StrictMode>
     <AuthProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <SnackBarProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </SnackBarProvider>
     </AuthProvider>
   </React.StrictMode>
 );

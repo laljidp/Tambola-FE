@@ -1,24 +1,25 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Copyright from '../Copyright';
+import { useNavigate } from 'react-router';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { MuiTelInput, MuiTelInputInfo, matchIsValidTel } from 'mui-tel-input';
 import { useAuth } from '../../Hooks/useAuth';
-import { Alert, TextField } from '@mui/material';
-import { ACCESS_TOKEN_KEY, USER_DATA_KEY } from '../../constants';
-
+import { useSnackbar } from '../../Hooks/useSnackbar';
 
 const theme = createTheme();
 
 const SignIn = () => {
 
+  const { showError } = useSnackbar()
   const [payload, setPayload] = React.useState({
     phoneNo: '',
     otp: '',
@@ -28,9 +29,9 @@ const SignIn = () => {
 
   const [otp, setOpt] = React.useState('')
   const [verifyOTPMode, setVerifyOTPMode] = React.useState(false)
-  const [showErrorAlert, setShowErrorAlert] = React.useState('')
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
   const navigate = useNavigate()
-  const { signinViaPhone, verifyOTP, setUser, setAccessToken, setIsAuthenticated } = useAuth()
+  const { signinViaPhone, verifyOTP, setLoggedInUser } = useAuth()
 
   const handleChangePhone = (value: string, info: MuiTelInputInfo) => {
     const number: string = info.nationalNumber || ''
@@ -40,50 +41,57 @@ const SignIn = () => {
       fullPhoneNumber: value,
       isPhoneValid: matchIsValidTel(value)
     })
-    setShowErrorAlert('')
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (verifyOTPMode) {
-      const resp = await verifyOTP(payload.phoneNo, otp)
-      const { success, message, user, token } = resp.data
-      if (success) {
-        setUser(user)
-        setIsAuthenticated(true)
-        setAccessToken(token)
-        localStorage.setItem(ACCESS_TOKEN_KEY, token)
-        localStorage.setItem(USER_DATA_KEY, JSON.stringify(user))
-
-        navigate('/')
-      } else {
-        setShowErrorAlert(message)
+      setIsSubmitting(true)
+      try {
+        const resp = await verifyOTP(payload.phoneNo, otp)
+        const { success, message, user, token } = resp.data
+        if (success) {   
+          setLoggedInUser(user, token)       
+          setIsSubmitting(false)
+          navigate('/')
+        } else {
+          showError(message)
+          setIsSubmitting(false)
+        }
+      } catch (err: any) {
+        setIsSubmitting(false)
+        const { data } = err.response
+        showError(data?.error?.toString())
+        console.log('data', data)
       }
       return
     }
 
-
     if (!payload.isPhoneValid) {
-      setShowErrorAlert('Please enter a valid phone number')
+      showError('Please enter a valid phone number')
       return
     }
 
     // Call API to sign in
     try {
+      setIsSubmitting(true)
       const resp = await signinViaPhone(payload.phoneNo, '+91') // supporting IN only for now
       const { success, message } = resp.data
       if (success) {
         // Go for OTP screen
         setVerifyOTPMode(true)
+        setIsSubmitting(false)
       } else {
-        setShowErrorAlert(message)
+        showError(message)
+        setIsSubmitting(false)
         // show error message
       }
     } catch (err: any) {
+      setIsSubmitting(false)
       const { error = '' } = err?.response?.data
       console.log('call API...', err)
-      setShowErrorAlert(error.toString())
+      showError(error.toString())
     }
   };
 
@@ -93,7 +101,6 @@ const SignIn = () => {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        {showErrorAlert && <Alert variant="filled" severity="error">{showErrorAlert}</Alert>}
         <Box
           sx={{
             marginTop: 8,
@@ -113,13 +120,14 @@ const SignIn = () => {
               onlyCountries={['IN']}
               sx={{ width: '100%' }}
               value={payload.fullPhoneNumber}
+              placeholder={'Phone number'}
               defaultCountry='IN'
               helperText={!isPhoneValid && phoneNo.length > 0 ? 'Invalid Phone number' : ''}
               error={!isPhoneValid && phoneNo.length > 0}
               onChange={handleChangePhone}
-              forceCallingCode
-
+              forceCallingCode              
               size='small'
+              disabled={verifyOTPMode}
             />
 
             {verifyOTPMode && (
@@ -138,9 +146,14 @@ const SignIn = () => {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={isSubmitting}
             >
               {verifyOTPMode ? 'Verify OTP' : 'Sign In'}
             </Button>
+            {verifyOTPMode && (
+              <Button onClick={() => setVerifyOTPMode(false)}>
+                <ArrowBackIosNewIcon />Back</Button>
+            )}
             {!verifyOTPMode && (
               <>
                 <p>OR (Create Account)</p>
@@ -160,7 +173,7 @@ const SignIn = () => {
           </Box>
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
+      </Container>     
     </ThemeProvider>
   );
 }
