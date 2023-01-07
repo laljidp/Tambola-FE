@@ -10,11 +10,9 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import DrawerMenu from '../DrawerMenu';
-import { useAuth } from '../../../Hooks/useAuth';
 
 const AppHeader = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const auth = useAuth()
   const navigate = useNavigate()
 
   const [openDrawer, setOpenDrawer] = React.useState(false)
@@ -30,11 +28,7 @@ const AppHeader = () => {
   };
 
   const handleLogout = () => {
-    auth.signout()
-    setTimeout(() => {
-      navigate('/login')
-    }, 1000)
-
+    navigate('/logout')
   }
 
   return (

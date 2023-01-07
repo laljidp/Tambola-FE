@@ -1,13 +1,29 @@
 import React, { createContext, useContext, useState } from 'react'
 
-const SnackBarContext = createContext({
+export type AlertColor = 'success' | 'info' | 'warning' | 'error'
+
+export interface SnackbarI {
+  show: boolean
+  type: AlertColor | undefined
+  message: string
+}
+
+export interface SnackbarContextI {
+  snackbar: SnackbarI
+  hideSnackbar: () => void,
+  showError: (message: string) => void,
+  showSuccessMsg: (message: string) => void
+}
+
+const SnackBarContext = createContext<SnackbarContextI>({
   snackbar: {
     show: false,
-    type: '',
+    type: 'error',
     message: ''
   },
   hideSnackbar: () => { },
-  showError: (message: string) => {}
+  showError: (message: string) => { },
+  showSuccessMsg: (message: string) => { }
 })
 
 export const SnackBarProvider: React.FC<{ children: React.ReactNode }> = (props: any): React.ReactElement => {
@@ -24,21 +40,21 @@ export const useSnackbar = () => {
   return useContext(SnackBarContext)
 }
 
-function useProvideSnackbar() {
-  const [snackbar, setSnackbar] = useState({
+function useProvideSnackbar(): any {
+  const [snackbar, setSnackbar] = useState<SnackbarI>({
     show: false,
-    type: '',
+    type: 'error',
     message: ''
   })
 
   const hideSnackbar = () => {
     setSnackbar({
       show: false,
-      type: '',
+      type: undefined,
       message: ''
     })
   }
-  
+
   const showError = (message: string) => {
     setSnackbar({
       show: true,
@@ -47,9 +63,18 @@ function useProvideSnackbar() {
     })
   }
 
+  const showSuccessMsg = (message: string) => {
+    setSnackbar({
+      show: true,
+      type: 'success',
+      message
+    })
+  }
+
   return {
     snackbar,
     hideSnackbar,
-    showError
+    showError,
+    showSuccessMsg
   }
 }

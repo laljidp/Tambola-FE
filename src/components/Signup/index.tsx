@@ -58,15 +58,15 @@ const SignUp: React.FC = (): React.ReactElement => {
     onSubmit: async (values) => {
 
 
-      if(verifyOTPMode) {
+      if (verifyOTPMode) {
         //call API
-        if(!otp.trim() || otp.trim().length !== 6) {
+        if (!otp.trim() || otp.trim().length !== 6) {
           showError('Invalid OTP !')
           return
         }
         const resp = await verifyOTP(phoneNo.number, otp)
         const { success, message, token, user } = resp.data
-        if(success) {
+        if (success) {
           setLoggedInUser(user, token)
           navigate('/')
         } else {
@@ -75,6 +75,11 @@ const SignUp: React.FC = (): React.ReactElement => {
         return
       }
 
+      if (!phoneNo.isValid) {
+        showError('Enter correct Phone number')
+        return
+      }
+      
       const payload = {
         ...values,
         phoneNo: phoneNo.number,

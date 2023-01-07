@@ -19,7 +19,7 @@ const theme = createTheme();
 
 const SignIn = () => {
 
-  const { showError } = useSnackbar()
+  const { showError, showSuccessMsg } = useSnackbar()
   const [payload, setPayload] = React.useState({
     phoneNo: '',
     otp: '',
@@ -82,6 +82,7 @@ const SignIn = () => {
         // Go for OTP screen
         setVerifyOTPMode(true)
         setIsSubmitting(false)
+        showSuccessMsg(message)
       } else {
         showError(message)
         setIsSubmitting(false)

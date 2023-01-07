@@ -14,7 +14,8 @@ export const endpoints = {
     login: '/auth/login',
     signup: '/auth/register',
     verifyOTP: '/auth/verifyOTP',
-    myProfile: '/user/my-profile'
+    myProfile: '/user/my-profile',
+    getActiveContest: '/contest'
 }
 
 
