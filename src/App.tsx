@@ -13,6 +13,7 @@ import './App.css';
 
 const LogoutPage = React.lazy(() => import('./components/Logout'))
 const Contests = React.lazy(() => import('./components/Contests'))
+const ContestDetails = React.lazy(() => import('./components/Contests/ContestDetails'))
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
           <Route path='/logout' element={<LogoutPage />} />
           <Route path='/' element={<PrivateRoute />}>
             <Route path='/contests' element={<Contests />} />
+            <Route path='/contests/:id' element={<ContestDetails />} />
           </Route>
         </Routes>
       </Suspense>
