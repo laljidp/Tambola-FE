@@ -2,7 +2,10 @@ export interface TicketI {
   name: string
   _id: string
   series: [number[]]
-  userID: string
+  user: {
+    firstName: string
+    profilePhoto: string
+  }
 }
 
 export interface PrizesI {

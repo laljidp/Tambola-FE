@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import TicketsLists from './TicketLists';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Button, Container, styled } from '@mui/material'
 import { useNavigate, useParams } from 'react-router'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import axiosInstance, { endpoints } from '../../services/api.service'
 import { useSnackbar } from '../../Hooks/useSnackbar'
 import PageSpinner from '../UI/Spinner'
@@ -46,6 +47,9 @@ const ContestDetails: React.FC = (): React.ReactElement => {
           <Button color='primary' variant='outlined'>Join contest</Button>
         </Title>
       )}
+      <TicketBody>
+        <TicketsLists tickets={contest?.tickets || []} />
+      </TicketBody>
     </Container>
   )
 }
@@ -61,6 +65,10 @@ const Title = styled('div')({
     color: '#1e88e5',
     fontWeight: 'bold'
   }
+})
+
+const TicketBody = styled('div')({
+  padding: '5px'
 })
 
 export default ContestDetails
